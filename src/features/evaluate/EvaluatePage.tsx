@@ -51,11 +51,11 @@ export function EvaluatePage() {
         Avaliar
       </Typography>
       <Typography color="text.secondary">
-        A IA recebe só os títulos persistidos. O resultado volta com o link que já estava salvo.
+        Informe a área de interesse. A avaliação usa os títulos persistidos e devolve título e link.
       </Typography>
       <Stack component="form" direction={{ xs: "column", sm: "row" }} spacing={2} onSubmit={handleSubmit}>
         <TextField
-          label="Área"
+          label="Área de interesse"
           value={area}
           onChange={(event) => setArea(event.target.value)}
           placeholder="front-end"
@@ -65,8 +65,10 @@ export function EvaluatePage() {
         </Button>
       </Stack>
       {error ? <Alert severity="warning">{error}</Alert> : null}
-      {evaluatedArea && matches.length === 0 ? (
-        <Typography>Nenhum título de {evaluatedArea} foi encontrado.</Typography>
+      {evaluatedArea ? (
+        <Typography>
+          {matches.length} {matches.length === 1 ? "vaga" : "vagas"} de {evaluatedArea}
+        </Typography>
       ) : null}
       {matches.length > 0 ? (
         <Table>
