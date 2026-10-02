@@ -98,7 +98,7 @@ export function JobsPage() {
           }}
         >
           {searching ? (
-            <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: statuses.length ? 1.5 : 0 }}>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", mb: statuses.length ? 1.5 : 0 }}>
               <CircularProgress size={18} />
               <Typography variant="body2">Buscando vagas na Gupy</Typography>
             </Stack>

@@ -19,7 +19,7 @@ const entries = [
   {
     href: "/tendencias",
     title: "Tendências",
-    description: "Mostra volume, empresas e termos a partir das mesmas vagas.",
+    description: "Lê as vagas persistidas, pede a leitura de mercado para a OpenAI e mostra o JSON salvo.",
   },
 ];
 

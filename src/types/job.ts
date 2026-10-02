@@ -15,14 +15,26 @@ export type EvaluateResponse = {
   matches: EvaluateMatch[];
 };
 
-export type TrendCount = {
-  label: string;
-  count: number;
+export type TrendArea = {
+  name: string;
+  volume: string;
+  trend: string;
+};
+
+export type TrendsAnalysis = {
+  sourceFile: string;
+  totalJobs: number;
+  uniqueTitles: number;
+  market: TrendArea[];
+  development: TrendArea[];
+  warnings: string[];
+  model: string;
+  inputTokens: number;
+  cachedTokens: number;
+  outputTokens: number;
+  costUsd: number;
 };
 
 export type TrendsResponse = {
-  totalJobs: number;
-  byDay: TrendCount[];
-  byCompany: TrendCount[];
-  topTerms: TrendCount[];
+  analysis: TrendsAnalysis | null;
 };

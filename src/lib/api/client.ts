@@ -35,8 +35,12 @@ export function listJobs() {
   return request<JobsResponse>("/jobs");
 }
 
-export async function searchJobs(onStatus: (message: string) => void): Promise<JobsResponse> {
-  const response = await fetch(`${API_URL}/jobs/search`, { method: "POST" });
+async function postEventStream<T>(
+  path: string,
+  onStatus: (message: string) => void,
+  messages: { errorFallback: string; emptyMessage: string },
+): Promise<T> {
+  const response = await fetch(`${API_URL}${path}`, { method: "POST" });
 
   if (!response.ok || !response.body) {
     throw new Error(`A API respondeu com status ${response.status}.`);
@@ -45,7 +49,7 @@ export async function searchJobs(onStatus: (message: string) => void): Promise<J
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buffer = "";
-  let result: JobsResponse | null = null;
+  let result: T | null = null;
 
   const handleEvent = (raw: string) => {
     let eventName = "message";
@@ -71,12 +75,12 @@ export async function searchJobs(onStatus: (message: string) => void): Promise<J
     }
 
     if (eventName === "done") {
-      result = data as JobsResponse;
+      result = data as T;
     }
 
     if (eventName === "error") {
       const detail = (data as { detail?: string }).detail;
-      throw new Error(detail ?? "Não foi possível buscar as vagas.");
+      throw new Error(detail ?? messages.errorFallback);
     }
   };
 
@@ -102,10 +106,24 @@ export async function searchJobs(onStatus: (message: string) => void): Promise<J
   }
 
   if (!result) {
-    throw new Error("A busca terminou sem devolver as vagas.");
+    throw new Error(messages.emptyMessage);
   }
 
   return result;
+}
+
+export function searchJobs(onStatus: (message: string) => void) {
+  return postEventStream<JobsResponse>("/jobs/search", onStatus, {
+    errorFallback: "Não foi possível buscar as vagas.",
+    emptyMessage: "A busca terminou sem devolver as vagas.",
+  });
+}
+
+export function analyzeTrends(onStatus: (message: string) => void) {
+  return postEventStream<TrendsResponse>("/trends/search", onStatus, {
+    errorFallback: "Não foi possível analisar as tendências.",
+    emptyMessage: "A análise terminou sem devolver as tendências.",
+  });
 }
 
 export function evaluateJobs(area: string) {
